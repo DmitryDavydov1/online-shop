@@ -1,5 +1,7 @@
 package ru.skypro.homework.service.impl;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +28,12 @@ public class AuthServiceImpl implements AuthService {
             return false;
         }
         UserDetails userDetails = manager.loadUserByUsername(userName);
+
+        UsernamePasswordAuthenticationToken auth =
+                new UsernamePasswordAuthenticationToken(userDetails, null);
+
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
         return encoder.matches(password, userDetails.getPassword());
     }
 
@@ -43,5 +51,4 @@ public class AuthServiceImpl implements AuthService {
                         .build());
         return true;
     }
-
 }
