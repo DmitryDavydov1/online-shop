@@ -15,9 +15,12 @@ public class CommentEntity {
     private Long pk;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private UserEntity user;
 
     private String text;
+
+    private long createdAt;
 
     @ManyToOne
     @JoinColumn(name  = "ad_id")

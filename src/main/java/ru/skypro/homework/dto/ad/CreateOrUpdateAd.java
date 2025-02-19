@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class CreateOrUpdateAd {
     private String title;
-    private String price;
+    private long price;
     private String description;
 }

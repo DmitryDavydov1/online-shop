@@ -13,17 +13,22 @@ public class AdEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pk;
+    private long pk;
     private String text;
 
     @ManyToOne
     @JoinColumn(name = "author_id")
     private UserEntity author;
 
-    private long createdAt;
+    private long price;
 
-    @OneToMany(mappedBy = "ad")
+    private String description;
+
+    private String image;
+
+    @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentEntity> comments;
+
 
 
 }
