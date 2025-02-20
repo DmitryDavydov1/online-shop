@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.user.NewPassword;
@@ -23,9 +22,10 @@ public class UserController {
     private final UserService userService;
 
 
-    @GetMapping(path = "me")
-    public String getCurrentUser() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+    @GetMapping(path = "users/me")
+    public ResponseEntity<User> getCurrentUser() {
+        User user = userService.getCurrentUser();
+        return ResponseEntity.ok().body(user);
     }
 
     @PostMapping(path = "users/set_password")
@@ -35,7 +35,8 @@ public class UserController {
 
     @PatchMapping(path = "users/me")
     public ResponseEntity<UpdateUser> updateUser(@RequestBody UpdateUser updateUser) {
-        return ResponseEntity.ok().build();
+        UpdateUser update = userService.updateUser(updateUser);
+        return ResponseEntity.ok().body(update);
     }
 
     @PatchMapping(path = "users/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
