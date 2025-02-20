@@ -3,6 +3,7 @@ package ru.skypro.homework.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import ru.skypro.homework.dto.user.NewPassword;
 import ru.skypro.homework.dto.user.UpdateUser;
 import ru.skypro.homework.dto.user.User;
 import ru.skypro.homework.mapper.UserMapper;
@@ -34,6 +35,16 @@ public class UserService {
         userRepository.save(userEntity);
         return updateUser;
 
+    }
+
+    public boolean updatePassword(NewPassword newPassword) {
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserEntity userEntity = userRepository.findByEmail(name);
+
+        userEntity.setPassword(newPassword.getNewPassword());
+        userRepository.save(userEntity);
+
+        return true;
     }
 
 }
