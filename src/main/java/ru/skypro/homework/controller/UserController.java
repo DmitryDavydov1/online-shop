@@ -3,8 +3,10 @@ package ru.skypro.homework.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.user.NewPassword;
@@ -22,15 +24,23 @@ public class UserController {
     private final UserService userService;
 
 
-    @GetMapping(path = "users/me")
+    @GetMapping(path = "users1/me")
     public ResponseEntity<User> getCurrentUser() {
-        User user = userService.getCurrentUser();
-        return ResponseEntity.ok().body(user);
+        try {
+            User user = userService.getCurrentUser();
+            return ResponseEntity.ok().body(user);
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
+
     @PostMapping(path = "users/set_password")
-    public ResponseEntity<?> updatePassword(@RequestBody NewPassword newPassword) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<HttpStatus> updatePassword(@RequestBody NewPassword newPassword) {
+        if (userService.updatePassword(newPassword)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     @PatchMapping(path = "users/me")

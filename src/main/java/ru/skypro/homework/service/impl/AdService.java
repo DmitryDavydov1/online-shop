@@ -31,7 +31,7 @@ public class AdService {
     }
 
     public ExtendedAd getAdById(long id) {
-        AdEntity user = adRepository.findById(id).get();
+        AdEntity user = adRepository.findById(id).orElseThrow(() -> new RuntimeException("Такого объявления нет"));
         return adsMapper.toExtendedAd(user);
     }
 

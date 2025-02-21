@@ -42,7 +42,7 @@ public class CommentService {
 
     public Comment addCommentToAd(long id, CreateOrUpdateComment createOrUpdateComment) {
         String name = "string11123";
-        UserEntity userEntity = userRepository.findByEmail(name);
+        UserEntity userEntity = userRepository.findByEmail(name).orElseThrow();
         AdEntity adEntity = adRepository.findById(id).get();
 
         CommentEntity commentEntity = commentMapper.toCommentEntity(createOrUpdateComment, userEntity, adEntity);

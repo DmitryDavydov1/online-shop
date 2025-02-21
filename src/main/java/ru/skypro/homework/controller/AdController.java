@@ -38,7 +38,11 @@ public class AdController {
 
     @GetMapping(path = "/ads/{id}")
     public ResponseEntity<ExtendedAd> getAdById(@PathVariable int id) {
-        return ResponseEntity.ok().body(adService.getAdById(id));
+        try {
+            return ResponseEntity.ok().body(adService.getAdById(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping(path = "/ad/{id}")
