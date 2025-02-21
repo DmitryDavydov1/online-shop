@@ -20,8 +20,7 @@ public class UserService {
     public User getCurrentUser() {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         UserEntity userEntity = userRepository.findByEmail(name);
-        User user = userMapper.toUser(userEntity);
-        return user;
+        return userMapper.toUser(userEntity);
     }
 
     public UpdateUser updateUser(UpdateUser updateUser) {
@@ -40,11 +39,14 @@ public class UserService {
     public boolean updatePassword(NewPassword newPassword) {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         UserEntity userEntity = userRepository.findByEmail(name);
-
-        userEntity.setPassword(newPassword.getNewPassword());
-        userRepository.save(userEntity);
-
-        return true;
+        if (userEntity.getPassword().equals(newPassword.getNewPassword())) {
+            userEntity.setPassword(newPassword.getNewPassword());
+            userRepository.save(userEntity);
+            return true;
+        }
+        return false;
     }
+
+
 
 }

@@ -2,6 +2,7 @@ package ru.skypro.homework.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import ru.skypro.homework.dto.ad.Ad;
 import ru.skypro.homework.dto.ad.Ads;
 import ru.skypro.homework.dto.ad.CreateOrUpdateAd;
 import ru.skypro.homework.dto.ad.ExtendedAd;
+import ru.skypro.homework.service.impl.AdService;
 
 import java.util.List;
 
@@ -19,10 +21,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdController {
 
+    @Autowired
+    private AdService adService;
+
 
     @GetMapping(path = "/ads")
     public ResponseEntity<Ads> getAllAds() {
-        return null;
+        return ResponseEntity.ok().body(adService.getAllAds());
     }
 
     @PostMapping(path = "/ads", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -33,23 +38,24 @@ public class AdController {
 
     @GetMapping(path = "/ads/{id}")
     public ResponseEntity<ExtendedAd> getAdById(@PathVariable int id) {
-        return null;
+        return ResponseEntity.ok().body(adService.getAdById(id));
     }
 
-    @DeleteMapping(path = "/ads/{id}")
+    @DeleteMapping(path = "/ad/{id}")
     public ResponseEntity<?> deleteAd(@PathVariable int id) {
-        return null;
+        adService.deleteAdById(id);
+        return ResponseEntity.ok().body(null);
     }
 
     @PatchMapping(path = "/ads/{id}")
     public ResponseEntity<Ad> updateAd(@PathVariable int id, @RequestBody CreateOrUpdateAd ad) {
-        return null;
+        return ResponseEntity.ok().body(adService.updateAd(id, ad));
     }
 
 
     @GetMapping(path = "/ads/me")
     public ResponseEntity<Ads> getAd() {
-        return null;
+        return ResponseEntity.ok().body(adService.getAdsAuthorizedUser());
     }
 
     @PatchMapping(path = "ads/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
