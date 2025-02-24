@@ -47,6 +47,7 @@ public class AdsMapper {
         extendedAd.setDescription(adEntity.getText());
         extendedAd.setTitle(adEntity.getText());
         extendedAd.setDescription(adEntity.getDescription());
+        extendedAd.setPk(adEntity.getPk());
 
         return extendedAd;
     }

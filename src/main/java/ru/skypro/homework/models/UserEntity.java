@@ -20,6 +20,7 @@ public class UserEntity {
     private String phone;
     private Role role;
     private String image;
+    private String password;
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AdEntity> ads;
 
