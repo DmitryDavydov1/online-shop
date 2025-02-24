@@ -1,8 +1,10 @@
 package ru.skypro.homework.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.ad.Ad;
 import ru.skypro.homework.dto.ad.Ads;
 import ru.skypro.homework.dto.ad.CreateOrUpdateAd;
@@ -11,8 +13,15 @@ import ru.skypro.homework.mapper.AdsMapper;
 import ru.skypro.homework.models.AdEntity;
 import ru.skypro.homework.repository.AdRepository;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static io.swagger.v3.core.util.AnnotationsUtils.getExtensions;
+import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
 public class AdService {
@@ -22,6 +31,11 @@ public class AdService {
 
     @Autowired
     private AdsMapper adsMapper;
+    @Value("${avatars.ads.dir}")
+    private String adsDir;
+
+    @Autowired
+    private FileService fileService;
 
     public Ads getAllAds() {
         List<AdEntity> allAds = adRepository.findAll();
@@ -35,9 +49,14 @@ public class AdService {
         return adsMapper.toExtendedAd(user);
     }
 
-    public void deleteAdById(long id) {
-        adRepository.deleteById(id);
-        adRepository.existsById(id);
+    public boolean deleteAdById(long id) {
+        boolean exists = adRepository.existsById(id);
+        if (exists) {
+            adRepository.deleteById(id);
+            return true;
+        }
+        return false;
+
     }
 
     public Ads getAdsAuthorizedUser() {
@@ -61,6 +80,18 @@ public class AdService {
 
         adRepository.save(ad);
         return newAd;
+    }
+
+    public void updateImage(long idAd, MultipartFile image) throws IOException {
+        AdEntity ad = adRepository.findById(idAd).get();
+        String path = ad + "." + getExtensions((Objects.requireNonNull(image.getOriginalFilename())));
+        String filePath = fileService.uploadFile(adsDir, path, image);
+        ad.setImage(filePath);
+        adRepository.save(ad);
+    }
+
+    private String getExtensions(String fileName) {
+        return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
 }

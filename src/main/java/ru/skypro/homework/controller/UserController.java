@@ -14,6 +14,8 @@ import ru.skypro.homework.dto.user.UpdateUser;
 import ru.skypro.homework.dto.user.User;
 import ru.skypro.homework.service.impl.UserService;
 
+import java.io.IOException;
+
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -50,7 +52,8 @@ public class UserController {
     }
 
     @PatchMapping(path = "users/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> updateUserImage(@RequestParam MultipartFile image) {
+    public ResponseEntity<?> updateUserImage(@RequestParam("image") MultipartFile image) throws IOException {
+        userService.updateImage(image);
         return ResponseEntity.ok().build();
     }
 

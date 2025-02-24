@@ -3,6 +3,7 @@ package ru.skypro.homework.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,8 @@ import ru.skypro.homework.dto.ad.CreateOrUpdateAd;
 import ru.skypro.homework.dto.ad.ExtendedAd;
 import ru.skypro.homework.service.impl.AdService;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -46,9 +49,12 @@ public class AdController {
     }
 
     @DeleteMapping(path = "/ad/{id}")
-    public ResponseEntity<?> deleteAd(@PathVariable int id) {
-        adService.deleteAdById(id);
-        return ResponseEntity.ok().body(null);
+
+    public ResponseEntity<Void> deleteAd(@PathVariable int id) {
+        if (adService.deleteAdById(id)) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PatchMapping(path = "/ads/{id}")
@@ -63,7 +69,9 @@ public class AdController {
     }
 
     @PatchMapping(path = "ads/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<List<String>> updateAdImage(@PathVariable int id, @RequestParam("file") MultipartFile file) {
-        return null;
+    public ResponseEntity<List<String>> updateAdImage(@PathVariable int id, @RequestParam("file") MultipartFile file) throws IOException {
+        adService.updateImage(id, file);
+        List<String> list = new ArrayList<>(List.of("string"));
+        return ResponseEntity.ok(list);
     }
 }
