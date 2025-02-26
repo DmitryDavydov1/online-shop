@@ -6,12 +6,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.dto.ad.Ads;
 import ru.skypro.homework.dto.user.NewPassword;
 import ru.skypro.homework.dto.user.UpdateUser;
 import ru.skypro.homework.dto.user.User;
+import ru.skypro.homework.service.impl.AdService;
 import ru.skypro.homework.service.impl.UserService;
 
 import java.io.IOException;
@@ -25,6 +28,7 @@ public class UserController {
 
     private final UserService userService;
 
+    private final AdService adService;
 
     @GetMapping(path = "users/me")
     public ResponseEntity<User> getCurrentUser() {

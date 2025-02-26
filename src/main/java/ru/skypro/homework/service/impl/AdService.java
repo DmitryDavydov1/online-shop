@@ -23,8 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static io.swagger.v3.core.util.AnnotationsUtils.getExtensions;
-import static java.nio.file.StandardOpenOption.CREATE_NEW;
+
 
 @Service
 public class AdService {
@@ -110,4 +109,13 @@ public class AdService {
         return adsMapper.toAd(adEntity);
     }
 
+
+    public boolean getIsAdOwner(Long id) {
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserEntity user = userRepository.findByEmail(name).orElseThrow(() ->
+                new UsernameNotFoundException("Пользователь не найден: " + name));
+        AdEntity adEntity = adRepository.findById(id).get();
+        return user.getId().equals(adEntity.getAuthor().getId());
+
+    }
 }

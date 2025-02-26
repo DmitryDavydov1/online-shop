@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.ad.Ad;
@@ -49,9 +50,6 @@ public class AdController {
     }
 
 
-
-
-
     @GetMapping(path = "/ads/{id}")
     public ResponseEntity<ExtendedAd> getAdById(@PathVariable int id) {
         try {
@@ -61,8 +59,8 @@ public class AdController {
         }
     }
 
+    @PreAuthorize("@adService.getIsAdOwner(#id)")
     @DeleteMapping(path = "/ads/{id}")
-
     public ResponseEntity<Void> deleteAd(@PathVariable int id) {
         if (adService.deleteAdById(id)) {
             return ResponseEntity.noContent().build();
@@ -70,8 +68,10 @@ public class AdController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+
+    @PreAuthorize("@adService.getIsAdOwner(#id)")
     @PatchMapping(path = "/ads/{id}")
-    public ResponseEntity<Ad> updateAd(@PathVariable int id, @RequestBody CreateOrUpdateAd ad) {
+    public ResponseEntity<Ad> updateAd(@PathVariable long id, @RequestBody CreateOrUpdateAd ad) {
         return ResponseEntity.ok().body(adService.updateAd(id, ad));
     }
 
@@ -81,6 +81,7 @@ public class AdController {
         return ResponseEntity.ok().body(adService.getAdsAuthorizedUser());
     }
 
+    @PreAuthorize("@adService.getIsAdOwner(#id)")
     @PatchMapping(path = "ads/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<List<String>> updateAdImage(@PathVariable int id, @RequestParam("file") MultipartFile file) throws IOException {
         adService.updateImage(id, file);
