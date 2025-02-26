@@ -21,6 +21,7 @@ public class CommentMapper {
         comment.setCreatedAt(commentEntity.getCreatedAt());
         comment.setPk(commentEntity.getPk());
         comment.setText(commentEntity.getText());
+        comment.setAuthor(commentEntity.getPk());
 
         return comment;
     }

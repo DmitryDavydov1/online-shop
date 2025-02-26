@@ -1,6 +1,7 @@
 package ru.skypro.homework.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.comments.Comment;
 import ru.skypro.homework.dto.comments.Comments;
@@ -41,7 +42,7 @@ public class CommentService {
 
 
     public Comment addCommentToAd(long id, CreateOrUpdateComment createOrUpdateComment) {
-        String name = "string11123";
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
         UserEntity userEntity = userRepository.findByEmail(name).orElseThrow();
         AdEntity adEntity = adRepository.findById(id).get();
 

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.user.NewPassword;
@@ -30,12 +31,14 @@ public class UserService {
 
     @Value("${avatars.users.dir}")
     private String avatarsDir;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private FileService fileService;
 
     public User getCurrentUser() {
-        String name = "string11123";
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        ;
         UserEntity userEntity = userRepository.findByEmail(name)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден: " + name));
         System.out.println(userEntity);
@@ -61,12 +64,13 @@ public class UserService {
         UserEntity userEntity = userRepository.findByEmail(name)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден: " + name));
 
-        if (userEntity.getPassword().equals(newPassword.getCurrentPassword())) {
-            userEntity.setPassword(newPassword.getNewPassword());
-            userRepository.save(userEntity);
-            return true;
+        if (!passwordEncoder.matches(newPassword.getCurrentPassword(), userEntity.getPassword())) {
+            return false;
         }
-        return false;
+
+        userEntity.setPassword(passwordEncoder.encode(newPassword.getNewPassword()));
+        userRepository.save(userEntity);
+        return true;
     }
 
 
