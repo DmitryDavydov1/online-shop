@@ -3,6 +3,7 @@ package ru.skypro.homework.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.ad.Ad;
@@ -11,7 +12,9 @@ import ru.skypro.homework.dto.ad.CreateOrUpdateAd;
 import ru.skypro.homework.dto.ad.ExtendedAd;
 import ru.skypro.homework.mapper.AdsMapper;
 import ru.skypro.homework.models.AdEntity;
+import ru.skypro.homework.models.UserEntity;
 import ru.skypro.homework.repository.AdRepository;
+import ru.skypro.homework.repository.UserRepository;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -36,6 +39,8 @@ public class AdService {
 
     @Autowired
     private FileService fileService;
+    @Autowired
+    private UserRepository userRepository;
 
     public Ads getAllAds() {
         List<AdEntity> allAds = adRepository.findAll();
@@ -92,6 +97,17 @@ public class AdService {
 
     private String getExtensions(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
+    }
+
+    public Ad addAd(CreateOrUpdateAd ad, MultipartFile image) throws IOException {
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserEntity user = userRepository.findByEmail(name).orElseThrow(() ->
+                new UsernameNotFoundException("Пользователь не найден: " + name));
+        String path = ad + "." + getExtensions((Objects.requireNonNull(image.getOriginalFilename())));
+        String filePath = fileService.uploadFile(adsDir, path, image);
+        AdEntity adEntity = adsMapper.toAdEntity(ad, user, filePath);
+        adRepository.save(adEntity);
+        return adsMapper.toAd(adEntity);
     }
 
 }

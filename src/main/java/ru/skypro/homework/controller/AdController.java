@@ -1,5 +1,6 @@
 package ru.skypro.homework.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ public class AdController {
 
     @Autowired
     private AdService adService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
 
     @GetMapping(path = "/ads")
@@ -33,10 +36,20 @@ public class AdController {
         return ResponseEntity.ok().body(adService.getAllAds());
     }
 
-    @PostMapping(path = "/ads", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Ads> addAd(@RequestBody CreateOrUpdateAd ad, @RequestParam MultipartFile file) {
-        return null;
+    @PostMapping(path = "/ads", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Ad> addAd(
+            @RequestPart(value = "ad", required = true) String adJson,
+            @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        CreateOrUpdateAd ad = objectMapper.readValue(adJson, CreateOrUpdateAd.class);
+
+        return ResponseEntity.ok().body(adService.addAd(ad, image));
     }
+
+
+
 
 
     @GetMapping(path = "/ads/{id}")
@@ -48,7 +61,7 @@ public class AdController {
         }
     }
 
-    @DeleteMapping(path = "/ad/{id}")
+    @DeleteMapping(path = "/ads/{id}")
 
     public ResponseEntity<Void> deleteAd(@PathVariable int id) {
         if (adService.deleteAdById(id)) {

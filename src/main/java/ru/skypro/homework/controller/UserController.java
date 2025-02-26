@@ -26,7 +26,7 @@ public class UserController {
     private final UserService userService;
 
 
-    @GetMapping(path = "users1/me")
+    @GetMapping(path = "users/me")
     public ResponseEntity<User> getCurrentUser() {
         try {
             User user = userService.getCurrentUser();
