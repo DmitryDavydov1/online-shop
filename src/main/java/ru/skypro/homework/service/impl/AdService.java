@@ -28,18 +28,21 @@ import java.util.stream.Collectors;
 @Service
 public class AdService {
 
-    @Autowired
-    private AdRepository adRepository;
+    private final AdRepository adRepository;
 
-    @Autowired
-    private AdsMapper adsMapper;
+    private final AdsMapper adsMapper;
     @Value("${avatars.ads.dir}")
     private String adsDir;
 
-    @Autowired
-    private FileService fileService;
-    @Autowired
-    private UserRepository userRepository;
+    private final FileService fileService;
+    private final UserRepository userRepository;
+
+    public AdService(AdRepository adRepository, AdsMapper adsMapper, FileService fileService, UserRepository userRepository) {
+        this.adRepository = adRepository;
+        this.adsMapper = adsMapper;
+        this.fileService = fileService;
+        this.userRepository = userRepository;
+    }
 
     public Ads getAllAds() {
         List<AdEntity> allAds = adRepository.findAll();
