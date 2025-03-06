@@ -6,8 +6,10 @@ import ru.skypro.homework.dto.ad.Ads;
 import ru.skypro.homework.dto.ad.CreateOrUpdateAd;
 import ru.skypro.homework.dto.ad.ExtendedAd;
 import ru.skypro.homework.models.AdEntity;
+import ru.skypro.homework.models.CommentEntity;
 import ru.skypro.homework.models.UserEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.comments.Comment;
 import ru.skypro.homework.dto.comments.Comments;
@@ -33,13 +34,14 @@ public class CommentController {
         return ResponseEntity.ok().body(commentService.addCommentToAd(id, comment));
     }
 
-
+    @PreAuthorize("@commentService.getCoemment(#commentId)")
     @DeleteMapping(path = "/ads/{adId}/comments/{commentId}")
     public ResponseEntity<?> deleteComment(@PathVariable int adId, @PathVariable int commentId) {
         commentService.deleteComment(commentId);
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("@commentService.getCoemment(#commentId)")
     @PatchMapping(path = "/ads/{adId}/comments/{commentId}")
     public ResponseEntity<Comment> updateComment(@PathVariable int adId, @PathVariable int commentId, @RequestBody CreateOrUpdateComment comment) {
         return ResponseEntity.ok().body(commentService.updateComment(adId, commentId, comment));

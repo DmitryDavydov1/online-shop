@@ -1,6 +1,8 @@
 package ru.skypro.homework.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.comments.Comment;
 import ru.skypro.homework.dto.comments.Comments;
@@ -19,14 +21,17 @@ import java.util.stream.Collectors;
 @Service
 public class CommentService {
 
-    @Autowired
-    private CommentRepository commentRepository;
-    @Autowired
-    private CommentMapper commentMapper;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private AdRepository adRepository;
+    private final CommentRepository commentRepository;
+    private final CommentMapper commentMapper;
+    private final UserRepository userRepository;
+    private final AdRepository adRepository;
+
+    public CommentService(AdRepository adRepository, CommentRepository commentRepository, CommentMapper commentMapper, UserRepository userRepository) {
+        this.adRepository = adRepository;
+        this.commentRepository = commentRepository;
+        this.commentMapper = commentMapper;
+        this.userRepository = userRepository;
+    }
 
 
     public Comments getCommentByAd(long id) {
@@ -41,7 +46,8 @@ public class CommentService {
 
 
     public Comment addCommentToAd(long id, CreateOrUpdateComment createOrUpdateComment) {
-        String name = "string11123";
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println(name);
         UserEntity userEntity = userRepository.findByEmail(name).orElseThrow();
         AdEntity adEntity = adRepository.findById(id).get();
 
@@ -63,4 +69,11 @@ public class CommentService {
     }
 
 
+    public boolean getCoemment(long id) {
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserEntity user = userRepository.findByEmail(name).orElseThrow(() ->
+                new UsernameNotFoundException("Пользователь не найден: " + name));
+        CommentEntity commentEntity = commentRepository.findById(id).get();
+        return user.getId().equals(commentEntity.getUser().getId());
+    }
 }
