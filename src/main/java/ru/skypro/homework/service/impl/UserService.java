@@ -29,7 +29,7 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
-    @Value("${avatars.users.dir}")
+    @Value("${avatars.dir}")
     private String avatarsDir;
     @Autowired
     private PasswordEncoder passwordEncoder;
