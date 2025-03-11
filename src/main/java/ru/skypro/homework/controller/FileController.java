@@ -1,5 +1,6 @@
 package ru.skypro.homework.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,9 +28,11 @@ public class FileController {
     @Value("${avatars.dir}")
     private String adsDir;
 
-    @GetMapping(value = "file/{filepath}")
-    public ResponseEntity<byte[]> getFile(@PathVariable String filepath) throws IOException {
-        Path filePath = Paths.get(adsDir, filepath);
+    @GetMapping("/{fileName}")
+    public ResponseEntity<byte[]> getFiles(
+            @Parameter(description = "Имя файла для получения", required = true)
+            @PathVariable String fileName) throws IOException {
+        Path filePath = Paths.get(adsDir, fileName);
         File file = filePath.toFile();
         byte[] img = Files.readAllBytes(file.toPath());
         HttpHeaders headers = new HttpHeaders();
