@@ -13,6 +13,7 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Service
 public class FileService {
 
+
     public String uploadFile(String dir, String path, MultipartFile image) throws IOException {
         Path filePath = Path.of(dir, path);
         Files.createDirectories(filePath.getParent());
@@ -25,6 +26,8 @@ public class FileService {
         ) {
             bis.transferTo(bos);
         }
-        return filePath.toString();
+        return filePath.toString().split("\\\\")[1];
     }
+
+
 }
