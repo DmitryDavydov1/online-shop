@@ -69,7 +69,7 @@ public class CommentService {
     }
 
 
-    public boolean getCoemment(long id) {
+    public boolean getComment(long id) {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         UserEntity user = userRepository.findByEmail(name).orElseThrow(() ->
                 new UsernameNotFoundException("Пользователь не найден: " + name));

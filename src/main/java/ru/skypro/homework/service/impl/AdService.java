@@ -24,14 +24,13 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 
-
 @Service
 public class AdService {
 
     private final AdRepository adRepository;
 
     private final AdsMapper adsMapper;
-    @Value("${avatars.ads.dir}")
+    @Value("${avatars.dir}")
     private String adsDir;
 
     private final FileService fileService;

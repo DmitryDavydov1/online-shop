@@ -34,14 +34,14 @@ public class CommentController {
         return ResponseEntity.ok().body(commentService.addCommentToAd(id, comment));
     }
 
-    @PreAuthorize("@commentService.getCoemment(#commentId)")
+    @PreAuthorize("@commentService.getComment(#commentId)")
     @DeleteMapping(path = "/ads/{adId}/comments/{commentId}")
     public ResponseEntity<?> deleteComment(@PathVariable int adId, @PathVariable int commentId) {
         commentService.deleteComment(commentId);
         return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("@commentService.getCoemment(#commentId)")
+    @PreAuthorize("@commentService.getComment(#commentId)")
     @PatchMapping(path = "/ads/{adId}/comments/{commentId}")
     public ResponseEntity<Comment> updateComment(@PathVariable int adId, @PathVariable int commentId, @RequestBody CreateOrUpdateComment comment) {
         return ResponseEntity.ok().body(commentService.updateComment(adId, commentId, comment));
