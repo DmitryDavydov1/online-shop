@@ -91,7 +91,7 @@ public class AdService {
     public void updateImage(long idAd, MultipartFile image) throws IOException {
         AdEntity ad = adRepository.findById(idAd).get();
         String path = ad + "." + getExtensions((Objects.requireNonNull(image.getOriginalFilename())));
-        String filePath = fileService.uploadFile(adsDir, path, image);
+        String filePath = "/" + fileService.uploadFile(adsDir, path, image);
         ad.setImage(filePath);
         adRepository.save(ad);
     }
@@ -106,6 +106,7 @@ public class AdService {
                 new UsernameNotFoundException("Пользователь не найден: " + name));
         String path = ad + "." + getExtensions((Objects.requireNonNull(image.getOriginalFilename())));
         String filePath = fileService.uploadFile(adsDir, path, image);
+        filePath = "/" + filePath;
         AdEntity adEntity = adsMapper.toAdEntity(ad, user, filePath);
         adRepository.save(adEntity);
         return adsMapper.toAd(adEntity);

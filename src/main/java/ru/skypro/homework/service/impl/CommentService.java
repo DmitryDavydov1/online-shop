@@ -47,7 +47,6 @@ public class CommentService {
 
     public Comment addCommentToAd(long id, CreateOrUpdateComment createOrUpdateComment) {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println(name);
         UserEntity userEntity = userRepository.findByEmail(name).orElseThrow();
         AdEntity adEntity = adRepository.findById(id).get();
 

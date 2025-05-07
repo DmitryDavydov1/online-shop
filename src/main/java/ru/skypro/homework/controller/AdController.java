@@ -81,11 +81,22 @@ public class AdController {
         return ResponseEntity.ok().body(adService.getAdsAuthorizedUser());
     }
 
-    @PreAuthorize("@adService.getIsAdOwner(#id)")
-    @PatchMapping(path = "ads/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<List<String>> updateAdImage(@PathVariable int id, @RequestParam("file") MultipartFile file) throws IOException {
-        adService.updateImage(id, file);
+//    @PreAuthorize("@adService.getIsAdOwner(#id)")
+    @PatchMapping(path = "ads/{id}/image", consumes = "multipart/form-data")
+    public ResponseEntity<List<String>> updateAdImage(@PathVariable("id") int id, @RequestPart("image") MultipartFile image) throws IOException {
+        adService.updateImage(id, image);
         List<String> list = new ArrayList<>(List.of("string"));
         return ResponseEntity.ok(list);
     }
+
+//    @GetMapping("/me")
+//    public ResponseEntity<Ads> getAllAdsMe() {
+//        return ResponseEntity.ok(adService.getUserAds());
+//    }
+//
+//    @PreAuthorize("hasRole('ADMIN') or @adServiceImpl.isAdOwner(#id)")
+//    @PatchMapping(path = "/{id}/image", consumes = "multipart/form-data")
+//    public ResponseEntity<List<String>> updateAdImage(@PathVariable("id") int id, @RequestPart("image") MultipartFile image) throws IOException {
+//        return ResponseEntity.ok(adService.updateAdPhotoById(id, image));
+//    }
 }
