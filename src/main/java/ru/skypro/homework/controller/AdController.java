@@ -37,10 +37,10 @@ public class AdController {
         return ResponseEntity.ok().body(adService.getAllAds());
     }
 
-    @PostMapping(path = "/ads", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Ad> addAd(
-            @RequestPart(value = "ad", required = true) String adJson,
-            @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+    @PostMapping(value = "/ads", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Ad> createAd(
+            @RequestPart(value = "properties") String adJson,
+            @RequestPart(value = "image") MultipartFile image) throws IOException {
 
 
         ObjectMapper objectMapper = new ObjectMapper();

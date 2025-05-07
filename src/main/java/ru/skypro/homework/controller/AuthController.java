@@ -28,8 +28,9 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody Register register) {
+    public ResponseEntity<HttpStatus> register(@RequestBody Register register) {
         if (authService.register(register)) {
+            System.out.printf("Register successfully registered: %s", register.getUsername());
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

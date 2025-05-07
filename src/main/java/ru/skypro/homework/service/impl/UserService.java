@@ -80,7 +80,7 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден: " + name));
         String path = userEntity + "." + getExtensions(Objects.requireNonNull(image.getOriginalFilename()));
 
-        String filePath = fileService.uploadFile(avatarsDir, path, image);
+        String filePath = "/" + fileService.uploadFile(avatarsDir, path, image);
         userEntity.setImage(filePath);
         userRepository.save(userEntity);
     }
